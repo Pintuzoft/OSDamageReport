@@ -151,3 +151,4 @@ public bool playerIsReal ( int player ) {
     return ( IsClientInGame ( player ) &&
              !IsClientSourceTV ( player ) );
 }
+
