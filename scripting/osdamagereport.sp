@@ -126,6 +126,7 @@ public void printReports ( ) {
         }
     }
 }
+// new line: ^n
 public void printReport ( int player ) {
     char buf[255];
     if ( victimsExists ( player ) ) {
