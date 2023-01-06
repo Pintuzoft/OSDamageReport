@@ -7,10 +7,12 @@
 int damageGiven[MAXPLAYERS+1][MAXPLAYERS+1];
 int hitsGiven[MAXPLAYERS+1][MAXPLAYERS+1];
 int hitboxGiven[MAXPLAYERS][MAXPLAYERS+1][MAXHITGROUPS+1];
+int hitboxGivenDamage[MAXPLAYERS][MAXPLAYERS+1][MAXHITGROUPS+1];
 
 int damageTaken[MAXPLAYERS+1][MAXPLAYERS+1];
 int hitsTaken[MAXPLAYERS+1][MAXPLAYERS+1];
 int hitboxTaken[MAXPLAYERS][MAXPLAYERS+1][MAXHITGROUPS+1];
+int hitboxTakenDamage[MAXPLAYERS][MAXPLAYERS+1][MAXHITGROUPS+1];
  
 int killedPlayer[MAXPLAYERS+1][MAXPLAYERS+1];
 int showReportAgain[MAXPLAYERS+1];
@@ -79,10 +81,12 @@ public void Event_PlayerHurt ( Event event, const char[] name, bool dontBroadcas
     damageGiven[attacker][victim] += healthDmg;
     hitsGiven[attacker][victim]++;
     hitboxGiven[attacker][victim][hitgroup]++;
+    hitboxGivenDamage[attacker][victim][hitgroup] += healthDmg;
 
     damageTaken[victim][attacker] += healthDmg;
     hitsTaken[victim][attacker]++;
     hitboxTaken[victim][attacker][hitgroup]++;
+    hitboxTakenDamage[victim][attacker][hitgroup] += healthDmg;
 
     /* if attacker is dead show updated report at the end of the round ? */
 
@@ -93,13 +97,17 @@ public void Event_PlayerSpawn ( Event event, const char[] name, bool dontBroadca
     GetClientName ( player, playerName[player], 64 );
 }
 public void Event_PlayerDisconnect ( Event event, const char[] name, bool dontBroadcast ) {
-    /* do we need this? */
+    resetClient ( event );
 }
 public void Event_PlayerConnect ( Event event, const char[] name, bool dontBroadcast ) {
-     
+    resetClient ( event );     
 }
 
 /* END EVENTS */
+
+public void resetClient ( Event event ) {
+
+}
 
 public void updatePlayerNames ( ) {
     for ( int player = 1; player <= MaxClients; player++ ) {
@@ -119,12 +127,73 @@ public void printReports ( ) {
     }
 }
 public void printReport ( int player ) {
-    PrintToChat ( player, " \x03===[ Damage Report ]===========" );
+    char buf[255];
+    if ( victimsExists ( player ) ) {
+        PrintToChat ( player, " \x04===[ victims - Total: %s dmg, %s hits ]===", totalDamageGiven(player), totalHitsGiven(player) );
+        for ( int victim = 1; victim <= MaxClients; victim++ ) {
+            if ( playerKilledVictim ( player, victim ) ) {
+                Format ( buf, sizeof(buf), "%s", getDamageInfo ( player, victim ) );
+                PrintToChat ( player, " \x05%s (killed): ", playerName[victim])
+            } else {
 
+            }
+        }        
+    }
+    if ( attackersExists ( player ) ) {
 
-    
-    PrintToChat ( player, " \x03===[ End of damage report]")
+        PrintToChat ( player, " \x04===[ Attackers ]===========" );
+
+    }
 }
+
+public char getDamageInfo ( int player, int victim ) {
+    char buf[255];
+    for ( int hitboxgroup = 0; hitboxgroup <= MAXHITGROUPS; hitboxgroup++ ) {
+        if ( hitboxGiven[hitboxgroup][player][victim] > 0 ) {
+            Format ( buf, sizeof(buf), "%s   ")
+        }
+    }
+}
+
+public int totalDamageGiven ( int player ) {
+    int damage = 0;
+    for ( int victim = 1; victim <= MaxClients; victim++ ) {
+        damage += damageGiven[player][victim];
+    }
+    return damage;
+}
+public int totalHitsGiven ( int player ) {
+    int damage = 0;
+    for ( int victim = 1; victim <= MaxClients; victim++ ) {
+        damage += hitsGiven[player][victim];
+    }
+    return damage;
+}
+
+public bool playerKilledVictim ( int player, int victim ) {
+    return ( killedPlayer[player][victim] == 1 );
+}
+
+
+public bool victimsExists ( int player ) {
+    for ( int victim = 1; victim <= MaxClients; victim++ ) {
+        if ( damageGiven[player][victim] > 0 ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+public bool attackersExists ( int player ) {
+    for ( int attacker = 1; attacker <= MaxClients; attacker++ ) {
+        if ( damageTaken[player][attacker] > 0 ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 public void printUpdatedReports ( ) {
 
 }
