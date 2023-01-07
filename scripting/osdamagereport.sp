@@ -155,7 +155,7 @@ public void printReport ( int player ) {
 public void fetchDamageInfo ( int player, int victim ) {
     char victimName[64];
     GetClientName ( victim, victimName, sizeof(victimName) );
-    Format ( damageInfo, sizeof(damageInfo), " - %s", victim );
+    Format ( damageInfo, sizeof(damageInfo), " - %s", victimName );
     if ( playerKilledVictim ( player, victim ) ) {
         Format ( damageInfo, sizeof(damageInfo), " (killed)", damageInfo );
     }
@@ -244,6 +244,6 @@ public void clearAllDamageData ( ) {
 /* return true if player is real */
 public bool playerIsReal ( int player ) {
     return ( IsClientInGame ( player ) &&
-             !IsClientSourceTV ( player ) );
+             ! IsClientSourceTV ( player ) );
 }
 
