@@ -37,7 +37,6 @@ public void OnPluginStart ( ) {
     HookEvent ( "player_death", Event_PlayerDeath );
     HookEvent ( "player_hurt", Event_PlayerHurt );
     HookEvent ( "player_spawn", Event_PlayerSpawn );
-    RegConsoleCmd ( "sm_printreport", Command_printreport );
     hitboxName[0] = "Body";
     hitboxName[1] = "Head";
     hitboxName[2] = "Chest";
@@ -59,12 +58,7 @@ public void Event_RoundStart ( Event event, const char[] name, bool dontBroadcas
 }
 
 public void Event_RoundEnd ( Event event, const char[] name, bool dontBroadcast ) {
-    printAliveReports ( );
-}
-
-public Action Command_printreport ( int client, int args ) {
-    printReport ( client );
-    return Plugin_Handled;
+    CreateTimer ( 2.1, printAliveReports );
 }
 
 public void Event_PlayerDeath ( Event event, const char[] name, bool dontBroadcast ) {
@@ -105,22 +99,25 @@ public void Event_PlayerSpawn ( Event event, const char[] name, bool dontBroadca
 }
  
 /* END EVENTS */
- 
-public Action printSingleReport ( Handle timer, int player ) {
-    if ( playerIsReal ( player ) ) {
-        printReport ( player );
+
+public Action printSingleReport ( Handle timer, int victim ) {
+    if ( playerIsReal ( victim ) ) {
+        printReport ( victim );
+        clearDamageDataFor ( victim );
     }
     return Plugin_Handled;
 }
 
-public void printAliveReports ( ) {
+public Action printAliveReports ( Handle timer ) {
     for ( int player = 1; player <= MaxClients; player++ ) {
         if ( playerIsReal ( player ) ) {
             if ( IsPlayerAlive ( player ) ) {
                 printReport ( player );
+                clearDamageDataFor ( player );
             }
         }
     }
+    return Plugin_Handled;
 }
 
 public void printReport ( int player ) {
@@ -143,7 +140,6 @@ public void printReport ( int player ) {
             }
         }
     }
-    clearDamageDataFor ( player );
 }
 
 /* compile damage report for a single enemy */
@@ -154,7 +150,7 @@ public void fetchVictimDamageInfo ( int attacker, int victim ) {
     if ( attackerKilledVictim ( attacker, victim ) ) {
         Format ( damageInfo, sizeof(damageInfo), "%s (Killed)", damageInfo );
     }
-    Format ( damageInfo, sizeof(damageInfo), "%s: %d Hits, %d Dmg \x08- ", damageInfo, hitsGiven[attacker][victim], damageGiven[attacker][victim] );
+    Format ( damageInfo, sizeof(damageInfo), "%s: %d hits, %d dmg \x08- ", damageInfo, hitsGiven[attacker][victim], damageGiven[attacker][victim] );
     bool first = true;
     for ( int hitboxgroup = 0; hitboxgroup <= MAXHITGROUPS; hitboxgroup++ ) {
         if ( hitboxGiven[attacker][victim][hitboxgroup] > 0 ) {
@@ -173,9 +169,9 @@ public void fetchAttackerDamageInfo ( int attacker, int victim ) {
     GetClientName ( attacker, attackerName, sizeof(attackerName) );
     Format ( damageInfo, sizeof(damageInfo), " - %s", attackerName );
     if ( attackerKilledVictim ( attacker, victim ) ) {
-        Format ( damageInfo, sizeof(damageInfo), "%s (Killed by)", damageInfo );
+        Format ( damageInfo, sizeof(damageInfo), "%s (killed by)", damageInfo );
     }
-    Format ( damageInfo, sizeof(damageInfo), "%s: %d Hits, %d Dmg \x08- ", damageInfo, hitsTaken[victim][attacker], damageTaken[victim][attacker] );
+    Format ( damageInfo, sizeof(damageInfo), "%s: %d hits, %d dmg \x08- ", damageInfo, hitsTaken[victim][attacker], damageTaken[victim][attacker] );
     bool first = true;
     for ( int hitboxgroup = 0; hitboxgroup <= MAXHITGROUPS; hitboxgroup++ ) {
         if ( hitboxGiven[attacker][victim][hitboxgroup] > 0 ) {
