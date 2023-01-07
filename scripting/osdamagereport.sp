@@ -81,6 +81,9 @@ public void Event_PlayerHurt ( Event event, const char[] name, bool dontBroadcas
     int attacker_id = GetEventInt(event, "attacker");
     int victim = GetClientOfUserId(victim_id);
     int attacker = GetClientOfUserId(attacker_id);
+    char attackerName[64];
+    GetClientName ( attacker, attackerName, 64 );
+    PrintToConsole ( victim, "Event_PlayerHurt: attacker:%d, name:%s", attacker, attackerName );
     if ( ! IsClientInGame ( attacker ) ) {
         attacker = 0;
     }
