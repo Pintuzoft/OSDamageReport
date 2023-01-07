@@ -136,7 +136,7 @@ public void fetchVictimDamageInfo ( int attacker, int victim ) {
     if ( attackerKilledVictim ( attacker, victim ) ) {
         Format ( damageInfo, sizeof(damageInfo), "%s (Killed)", damageInfo );
     }
-    Format ( damageInfo, sizeof(damageInfo), "%s: %d Dmg, %d Hits \x08- ", damageInfo, damageGiven[attacker][victim], hitsGiven[attacker][victim] );
+    Format ( damageInfo, sizeof(damageInfo), "%s: %d Hits, %d Dmg \x08- ", damageInfo, hitsGiven[attacker][victim], damageGiven[attacker][victim] );
     bool first = true;
     for ( int hitboxgroup = 0; hitboxgroup <= MAXHITGROUPS; hitboxgroup++ ) {
         if ( hitboxGiven[attacker][victim][hitboxgroup] > 0 ) {
@@ -157,7 +157,7 @@ public void fetchAttackerDamageInfo ( int attacker, int victim ) {
     if ( attackerKilledVictim ( attacker, victim ) ) {
         Format ( damageInfo, sizeof(damageInfo), "%s (Killed by)", damageInfo );
     }
-    Format ( damageInfo, sizeof(damageInfo), "%s: %d Dmg, %d Hits \x08- ", damageInfo, damageTaken[victim][attacker], hitsTaken[victim][attacker] );
+    Format ( damageInfo, sizeof(damageInfo), "%s: %d Hits, %d Dmg \x08- ", damageInfo, hitsTaken[victim][attacker], damageTaken[victim][attacker] );
     bool first = true;
     for ( int hitboxgroup = 0; hitboxgroup <= MAXHITGROUPS; hitboxgroup++ ) {
         if ( hitboxGiven[attacker][victim][hitboxgroup] > 0 ) {
