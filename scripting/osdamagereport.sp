@@ -261,15 +261,19 @@ public void printUpdatedReports ( ) {
 }
 
 public void clearAllDamageData ( ) {
+    PrintToConsoleAll ( "Clearing all damage data:" );
     for ( int i = 1; i <= MaxClients; i++ ) {
+        PrintToConsoleAll ( " - %d", i );
         showReportAgain[i] = 0;
         for ( int j = 1; j <= MaxClients; j++ ) {
+        PrintToConsoleAll ( " - %d,%d", i, j );
             damageGiven[i][j] = 0;
             damageTaken[i][j] = 0;
             hitsGiven[i][j] = 0;
             hitsTaken[i][j] = 0;
             killedPlayer[i][j] = 0;
             for ( int k = 0; k <= MAXHITGROUPS; k++ ) {
+        PrintToConsoleAll ( " - %d,%d,%d", i, j,k );
                 hitboxGiven[i][j][k] = 0;
                 hitboxTaken[i][j][k] = 0;
             }
