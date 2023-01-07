@@ -103,7 +103,6 @@ public void Event_PlayerSpawn ( Event event, const char[] name, bool dontBroadca
 public Action printSingleReport ( Handle timer, int victim ) {
     PrintToConsole ( victim, "PrintSingleReport: %s", playerName[victim] );
     printReport ( victim );
-    CreateTimer ( 3.0, clearDamageDataForPlayer, victim );
     return Plugin_Continue;
 }
 
@@ -112,7 +111,6 @@ public Action printAliveReports ( Handle timer ) {
         if ( playerIsReal ( player ) ) {
             if ( IsPlayerAlive ( player ) ) {
                 printReport ( player );
-                CreateTimer ( 3.0, clearDamageDataForPlayer, player );
             }
         }
     }
@@ -265,23 +263,6 @@ public void clearAllDamageData ( ) {
             }
         }
     }
-}
-
-public Action clearDamageDataForPlayer ( Handle timer, int player ) {
-    for ( int enemy = 1; enemy <= MaxClients; enemy++ ) {
-        damageGiven[player][enemy] = 0;
-        damageTaken[player][enemy] = 0;
-        hitsGiven[player][enemy] = 0;
-        hitsTaken[player][enemy] = 0;
-        killedPlayer[player][enemy] = 0;
-        for ( int k = 0; k <= MAXHITGROUPS; k++ ) {
-            hitboxGiven[player][enemy][k] = 0;
-            hitboxTaken[player][enemy][k] = 0;
-            hitboxGivenDamage[player][enemy][k] = 0;
-            hitboxTakenDamage[player][enemy][k] = 0;
-        }
-    }
-    return Plugin_Continue;
 }
 
 /* return true if player is real */
