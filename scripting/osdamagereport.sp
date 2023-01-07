@@ -69,7 +69,7 @@ public void Event_PlayerDeath ( Event event, const char[] name, bool dontBroadca
     killedPlayer[attacker][victim] = 1;
 
     /* show report */
-    if ( ! isWarmup ) {
+    if ( ! isWarmup ( ) ) {
         CreateTimer ( 2.1, printSingleReport, victim );
     }
 }
