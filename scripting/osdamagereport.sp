@@ -52,13 +52,13 @@ public void OnPluginStart ( ) {
 
 /* EVENTS */
 public void Event_RoundStart ( Event event, const char[] name, bool dontBroadcast ) {
-    clearAllDamageData ( );
     updatePlayerNames ( );
 }
 
 public void Event_RoundEnd ( Event event, const char[] name, bool dontBroadcast ) {
     printReports ( );
     printUpdatedReports ( );
+    clearAllDamageData ( );
 }
 
 public void Event_PlayerDeath ( Event event, const char[] name, bool dontBroadcast ) {
