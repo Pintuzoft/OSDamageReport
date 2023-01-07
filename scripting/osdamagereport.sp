@@ -144,7 +144,7 @@ public void printReport ( int player ) {
         /* LOOP ALL ATTACKERS */
         for ( int attacker = 1; attacker <= MaxClients; attacker++ ) {
             if ( isVictim ( attacker, player ) ) {
-                fetchVictimDamageInfo ( attacker, player );
+                fetchAttackerDamageInfo ( attacker, player );
                 PrintToChat ( player, " \x05%s", damageInfo );
             }
         }
@@ -168,6 +168,28 @@ public void fetchVictimDamageInfo ( int attacker, int victim ) {
                 first = false;
             } else {
                 Format ( damageInfo, sizeof(damageInfo), "%s, %s[%d:%ddmg]", damageInfo, hitboxName[hitboxgroup], hitboxGiven[attacker][victim][hitboxgroup], hitboxGivenDamage[attacker][victim][hitboxgroup] );
+            }
+        }
+    }
+    Format ( damageInfo, sizeof(damageInfo), "%s)", damageInfo );
+}
+/* compile damage report for a single enemy */
+public void fetchAttackerDamageInfo ( int attacker, int victim ) {
+    char attackerName[64];
+    GetClientName ( attacker, attackerName, sizeof(attackerName) );
+    Format ( damageInfo, sizeof(damageInfo), " - %s", attackerName );
+    if ( attackerKilledVictim ( attacker, victim ) ) {
+        Format ( damageInfo, sizeof(damageInfo), "%s (killed by)", damageInfo );
+    }
+    Format ( damageInfo, sizeof(damageInfo), "%s: %d dmg, %d hits - (", damageInfo, damageTaken[victim][attacker], hitsTaken[victim][attacker] );
+    bool first = true;
+    for ( int hitboxgroup = 0; hitboxgroup <= MAXHITGROUPS; hitboxgroup++ ) {
+        if ( hitboxGiven[attacker][victim][hitboxgroup] > 0 ) {
+            if ( first ) {
+                Format ( damageInfo, sizeof(damageInfo), "%s%s[%d:%ddmg]", damageInfo, hitboxName[hitboxgroup], hitboxTaken[victim][attacker][hitboxgroup], hitboxTakenDamage[victim][attacker][hitboxgroup] );
+                first = false;
+            } else {
+                Format ( damageInfo, sizeof(damageInfo), "%s, %s[%d:%ddmg]", damageInfo, hitboxName[hitboxgroup], hitboxTaken[victim][attacker][hitboxgroup], hitboxTakenDamage[victim][attacker][hitboxgroup] );
             }
         }
     }
