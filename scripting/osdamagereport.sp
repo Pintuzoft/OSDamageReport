@@ -101,6 +101,7 @@ public void Event_PlayerSpawn ( Event event, const char[] name, bool dontBroadca
 /* END EVENTS */
 
 public Action printSingleReport ( Handle timer, int victim ) {
+    PrintToConsole ( victim, "PrintSingleReport: %s", playerName[victim] );
     printReport ( victim );
     CreateTimer ( 3.0, clearDamageDataForPlayer, victim );
     return Plugin_Handled;
