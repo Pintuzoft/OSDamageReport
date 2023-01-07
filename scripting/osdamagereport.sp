@@ -54,7 +54,7 @@ public void Event_RoundStart ( Event event, const char[] name, bool dontBroadcas
 }
 
 public void Event_RoundEnd ( Event event, const char[] name, bool dontBroadcast ) {
-    printReports ( );
+    printAliveReports ( );
 }
 
 public void Event_PlayerDeath ( Event event, const char[] name, bool dontBroadcast ) {
@@ -65,7 +65,7 @@ public void Event_PlayerDeath ( Event event, const char[] name, bool dontBroadca
     killedPlayer[attacker][victim] = 1;
 
     /* show report */
-
+    CreateTimer ( 3.0, printSingleReport, victim );
 }
 public void Event_PlayerHurt ( Event event, const char[] name, bool dontBroadcast ) {
     int healthDmg = GetEventInt(event,"dmg_health");
@@ -95,8 +95,19 @@ public void Event_PlayerSpawn ( Event event, const char[] name, bool dontBroadca
 }
  
 /* END EVENTS */
- 
-public void printReports ( ) {
+
+public void printDeathReport ( int player ) {
+    
+}
+
+public Action printSingleReport ( Handle timer, int player ) {
+    if ( playerIsReal ( player ) ) {
+        printReport ( player );
+    }
+    return Plugin_Handled;
+}
+
+public void printAliveReports ( ) {
     for ( int player = 1; player <= MaxClients; player++ ) {
         if ( playerIsReal ( player ) ) {
             if ( IsPlayerAlive ( player ) ) {
