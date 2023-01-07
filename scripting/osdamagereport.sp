@@ -45,7 +45,8 @@ public void OnPluginStart ( ) {
     hitboxName[5] = "R-arm";
     hitboxName[6] = "L-leg";
     hitboxName[7] = "R-Leg";
-    hitboxName[8] = "Neck";    
+    hitboxName[8] = "Neck";
+    playerName[0] = "World";
 }
 
 public void OnMapStart ( ) {
@@ -80,7 +81,9 @@ public void Event_PlayerHurt ( Event event, const char[] name, bool dontBroadcas
     int attacker_id = GetEventInt(event, "attacker");
     int victim = GetClientOfUserId(victim_id);
     int attacker = GetClientOfUserId(attacker_id);
-
+    if ( ! IsClientInGame ( attacker ) ) {
+        attacker = 0;
+    }
     damageGiven[attacker][victim] += healthDmg;
     hitsGiven[attacker][victim]++;
     hitboxGiven[attacker][victim][hitgroup]++;
