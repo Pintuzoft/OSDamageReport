@@ -81,12 +81,7 @@ public void Event_PlayerHurt ( Event event, const char[] name, bool dontBroadcas
     int attacker_id = GetEventInt(event, "attacker");
     int victim = GetClientOfUserId(victim_id);
     int attacker = GetClientOfUserId(attacker_id);
-    char attackerName[64];
-    GetClientName ( attacker, attackerName, 64 );
-    PrintToConsole ( victim, "Event_PlayerHurt: attacker:%d, name:%s", attacker, attackerName );
-    if ( ! IsClientInGame ( attacker ) ) {
-        attacker = 0;
-    }
+    
     damageGiven[attacker][victim] += healthDmg;
     hitsGiven[attacker][victim]++;
     hitboxGiven[attacker][victim][hitgroup]++;
@@ -127,7 +122,7 @@ public void printReport ( int player ) {
     if ( victimsExists ( player ) ) {
         PrintToChat ( player, " \x04===[ victims - Total: [%d:%d] (hits:damage) ]===", totalHitsGiven(player), totalDamageGiven(player) );
         /* LOOP ALL VICTIMS */
-        for ( int victim = 1; victim <= MaxClients; victim++ ) {
+        for ( int victim = 0; victim <= MaxClients; victim++ ) {
             if ( isVictim ( player, victim ) ) {
                 fetchVictimDamageInfo ( player, victim );
                 PrintToChat ( player, " \x05%s", damageInfo );      
@@ -137,7 +132,7 @@ public void printReport ( int player ) {
     if ( attackersExists ( player ) ) {
         PrintToChat ( player, " \x04===[ Attackers - Total: [%d:%d] (hits:damage) ]===", totalHitsTaken(player), totalDamageTaken(player) );
         /* LOOP ALL ATTACKERS */
-        for ( int attacker = 1; attacker <= MaxClients; attacker++ ) {
+        for ( int attacker = 0; attacker <= MaxClients; attacker++ ) {
             if ( isVictim ( attacker, player ) ) {
                 fetchAttackerDamageInfo ( attacker, player );
                 PrintToChat ( player, " \x05%s", damageInfo );
@@ -198,7 +193,7 @@ public bool isVictim ( int player, int victim ) {
 
 public int totalDamageGiven ( int player ) {
     int damage = 0;
-    for ( int victim = 1; victim <= MaxClients; victim++ ) {
+    for ( int victim = 0; victim <= MaxClients; victim++ ) {
         damage += damageGiven[player][victim];
     }
     return damage;
@@ -206,7 +201,7 @@ public int totalDamageGiven ( int player ) {
 
 public int totalDamageTaken ( int player ) {
     int damage = 0;
-    for ( int enemy = 1; enemy <= MaxClients; enemy++ ) {
+    for ( int enemy = 0; enemy <= MaxClients; enemy++ ) {
         damage += damageTaken[player][enemy];
     }
     return damage;
@@ -214,7 +209,7 @@ public int totalDamageTaken ( int player ) {
 
 public int totalHitsGiven ( int player ) {
     int damage = 0;
-    for ( int victim = 1; victim <= MaxClients; victim++ ) {
+    for ( int victim = 0; victim <= MaxClients; victim++ ) {
         damage += hitsGiven[player][victim];
     }
     return damage;
@@ -222,7 +217,7 @@ public int totalHitsGiven ( int player ) {
 
 public int totalHitsTaken ( int player ) {
     int damage = 0;
-    for ( int enemy = 1; enemy <= MaxClients; enemy++ ) {
+    for ( int enemy = 0; enemy <= MaxClients; enemy++ ) {
         damage += hitsTaken[player][enemy];
     }
     return damage;
@@ -234,7 +229,7 @@ public bool attackerKilledVictim ( int attacker, int victim ) {
 
 
 public bool victimsExists ( int player ) {
-    for ( int victim = 1; victim <= MaxClients; victim++ ) {
+    for ( int victim = 0; victim <= MaxClients; victim++ ) {
         if ( damageGiven[player][victim] > 0 ) {
             return true;
         }
@@ -243,7 +238,7 @@ public bool victimsExists ( int player ) {
 }
 
 public bool attackersExists ( int player ) {
-    for ( int attacker = 1; attacker <= MaxClients; attacker++ ) {
+    for ( int attacker = 0; attacker <= MaxClients; attacker++ ) {
         if ( damageTaken[player][attacker] > 0 ) {
             return true;
         }
@@ -253,9 +248,9 @@ public bool attackersExists ( int player ) {
 
 public void clearAllDamageData ( ) {
     PrintToConsoleAll ( "Clearing all damage data:" );
-    for ( int i = 1; i <= MaxClients; i++ ) {
+    for ( int i = 0; i <= MaxClients; i++ ) {
         showReportAgain[i] = 0;
-        for ( int j = 1; j <= MaxClients; j++ ) {
+        for ( int j = 0; j <= MaxClients; j++ ) {
             damageGiven[i][j] = 0;
             damageTaken[i][j] = 0;
             hitsGiven[i][j] = 0;
