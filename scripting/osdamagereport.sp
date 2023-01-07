@@ -104,7 +104,7 @@ public Action printSingleReport ( Handle timer, int victim ) {
     PrintToConsole ( victim, "PrintSingleReport: %s", playerName[victim] );
     printReport ( victim );
     CreateTimer ( 3.0, clearDamageDataForPlayer, victim );
-    return Plugin_Handled;
+    return Plugin_Continue;
 }
 
 public Action printAliveReports ( Handle timer ) {
@@ -281,7 +281,7 @@ public Action clearDamageDataForPlayer ( Handle timer, int player ) {
             hitboxTakenDamage[player][enemy][k] = 0;
         }
     }
-    return Plugin_Handled;
+    return Plugin_Continue;
 }
 
 /* return true if player is real */
