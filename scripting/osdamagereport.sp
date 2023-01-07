@@ -140,7 +140,7 @@ public void printReport ( int player ) {
         }        
     }
     if ( attackersExists ( player ) ) {
-        PrintToChat ( player, " \x04===[ Attackers ]===========" );
+        PrintToChat ( player, " \x04===[ Attackers - Total: %d dmg, %d hits ]===", totalDamageTaken(player), totalHitsTaken(player) );
         /* LOOP ALL ATTACKERS */
         for ( int attacker = 1; attacker <= MaxClients; attacker++ ) {
             if ( isVictim ( attacker, player ) ) {
@@ -157,9 +157,9 @@ public void fetchDamageInfo ( int player, int victim ) {
     GetClientName ( victim, victimName, sizeof(victimName) );
     Format ( damageInfo, sizeof(damageInfo), " - %s", victimName );
     if ( playerKilledVictim ( player, victim ) ) {
-        Format ( damageInfo, sizeof(damageInfo), " (killed)", damageInfo );
+        Format ( damageInfo, sizeof(damageInfo), "%s (killed)", damageInfo );
     }
-    Format ( damageInfo, sizeof(damageInfo), ": %d dmg, %d hits - (", damageGiven[player][victim], hitsGiven[player][victim] );
+    Format ( damageInfo, sizeof(damageInfo), "%s: %d dmg, %d hits - (", damageInfo, damageGiven[player][victim], hitsGiven[player][victim] );
     bool first = true;
     for ( int hitboxgroup = 0; hitboxgroup <= MAXHITGROUPS; hitboxgroup++ ) {
         if ( hitboxGiven[hitboxgroup][player][victim] > 0 ) {
@@ -188,10 +188,24 @@ public int totalDamageGiven ( int player ) {
     }
     return damage;
 }
+public int totalDamageTaken ( int player ) {
+    int damage = 0;
+    for ( int enemy = 1; enemy <= MaxClients; enemy++ ) {
+        damage += damageTaken[enemy][player];
+    }
+    return damage;
+}
 public int totalHitsGiven ( int player ) {
     int damage = 0;
     for ( int victim = 1; victim <= MaxClients; victim++ ) {
         damage += hitsGiven[player][victim];
+    }
+    return damage;
+}
+public int totalHitsTaken ( int player ) {
+    int damage = 0;
+    for ( int enemy = 1; enemy <= MaxClients; enemy++ ) {
+        damage += hitsTaken[enemy][player];
     }
     return damage;
 }
