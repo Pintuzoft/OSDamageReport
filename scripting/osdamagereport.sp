@@ -212,7 +212,7 @@ public int totalDamageGiven ( int player ) {
 public int totalDamageTaken ( int player ) {
     int damage = 0;
     for ( int enemy = 1; enemy <= MaxClients; enemy++ ) {
-        damage += damageTaken[enemy][player];
+        damage += damageTaken[player][enemy];
     }
     return damage;
 }
@@ -226,7 +226,7 @@ public int totalHitsGiven ( int player ) {
 public int totalHitsTaken ( int player ) {
     int damage = 0;
     for ( int enemy = 1; enemy <= MaxClients; enemy++ ) {
-        damage += hitsTaken[enemy][player];
+        damage += hitsTaken[player][enemy];
     }
     return damage;
 }
