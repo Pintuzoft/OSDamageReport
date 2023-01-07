@@ -122,7 +122,7 @@ public void updatePlayerNames ( ) {
 
 public void printReports ( ) {
     for ( int player = 1; player <= MaxClients; player++ ) {
-        if ( playerIsReal ( player ) && IsPlayerAlive ( player ) ) {
+        if ( playerIsReal ( player ) ) {
             printReport ( player );
         }
     }
@@ -130,7 +130,7 @@ public void printReports ( ) {
 
 public void printReport ( int player ) {
     if ( victimsExists ( player ) ) {
-        PrintToChat ( player, " \x04===[ victims - Total: %s dmg, %s hits ]===", totalDamageGiven(player), totalHitsGiven(player) );
+        PrintToChat ( player, " \x04===[ victims - Total: %d dmg, %d hits ]===", totalDamageGiven(player), totalHitsGiven(player) );
         /* LOOP ALL VICTIMS */
         for ( int victim = 1; victim <= MaxClients; victim++ ) {
             if ( isVictim ( player, victim ) ) {
@@ -159,15 +159,15 @@ public void fetchDamageInfo ( int player, int victim ) {
     if ( playerKilledVictim ( player, victim ) ) {
         Format ( damageInfo, sizeof(damageInfo), " (killed)", damageInfo );
     }
-    Format ( damageInfo, sizeof(damageInfo), ": %s dmg, %s hits - (", damageGiven[player][victim], hitsGiven[player][victim] );
+    Format ( damageInfo, sizeof(damageInfo), ": %d dmg, %d hits - (", damageGiven[player][victim], hitsGiven[player][victim] );
     bool first = true;
     for ( int hitboxgroup = 0; hitboxgroup <= MAXHITGROUPS; hitboxgroup++ ) {
         if ( hitboxGiven[hitboxgroup][player][victim] > 0 ) {
             if ( first ) {
-                Format ( damageInfo, sizeof(damageInfo), "%s%s[%s:%sdmg]", damageInfo, hitboxName[hitboxgroup], hitboxGiven[hitboxgroup][player][victim], hitboxGivenDamage[hitboxgroup][player][victim] );
+                Format ( damageInfo, sizeof(damageInfo), "%s%s[%d:%ddmg]", damageInfo, hitboxName[hitboxgroup], hitboxGiven[hitboxgroup][player][victim], hitboxGivenDamage[hitboxgroup][player][victim] );
                 first = false;
             } else {
-                Format ( damageInfo, sizeof(damageInfo), "%s, %s[%s:%sdmg]", damageInfo, hitboxName[hitboxgroup], hitboxGiven[hitboxgroup][player][victim], hitboxGivenDamage[hitboxgroup][player][victim] );
+                Format ( damageInfo, sizeof(damageInfo), "%s, %s[%d:%ddmg]", damageInfo, hitboxName[hitboxgroup], hitboxGiven[hitboxgroup][player][victim], hitboxGivenDamage[hitboxgroup][player][victim] );
             }
         }
     }
