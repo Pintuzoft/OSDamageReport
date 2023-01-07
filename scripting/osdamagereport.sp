@@ -167,7 +167,7 @@ public void fetchAttackerDamageInfo ( int attacker, int victim ) {
     char attackerName[64];
     GetClientName ( attacker, attackerName, sizeof(attackerName) );
     if ( attacker == 0 ) {
-        Format ( attackerName, sizeof(attackerName), " - World" );
+        Format ( damageInfo, sizeof(damageInfo), " - World" );
     } else {
         Format ( damageInfo, sizeof(damageInfo), " - %s", attackerName );
     }
