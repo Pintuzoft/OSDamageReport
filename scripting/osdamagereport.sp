@@ -37,6 +37,7 @@ public void OnPluginStart ( ) {
     HookEvent ( "player_death", Event_PlayerDeath );
     HookEvent ( "player_hurt", Event_PlayerHurt );
     HookEvent ( "player_spawn", Event_PlayerSpawn );
+    RegConsoleCmd ( "sm_printreport", Command_printreport );
     hitboxName[0] = "Body";
     hitboxName[1] = "Head";
     hitboxName[2] = "Chest";
@@ -48,6 +49,10 @@ public void OnPluginStart ( ) {
     hitboxName[8] = "Neck";    
 }
 
+public void OnMapStart ( ) {
+    clearAllDamageData ( );
+}
+
 /* EVENTS */
 public void Event_RoundStart ( Event event, const char[] name, bool dontBroadcast ) {
     clearAllDamageData ( );
@@ -55,6 +60,11 @@ public void Event_RoundStart ( Event event, const char[] name, bool dontBroadcas
 
 public void Event_RoundEnd ( Event event, const char[] name, bool dontBroadcast ) {
     printAliveReports ( );
+}
+
+public Action Command_printreport ( int client, int args ) {
+    printReport ( client );
+    return Plugin_Handled;
 }
 
 public void Event_PlayerDeath ( Event event, const char[] name, bool dontBroadcast ) {
@@ -65,7 +75,9 @@ public void Event_PlayerDeath ( Event event, const char[] name, bool dontBroadca
     killedPlayer[attacker][victim] = 1;
 
     /* show report */
-    CreateTimer ( 2.1, printSingleReport, victim );
+    if ( ! isWarmup ) {
+        CreateTimer ( 2.1, printSingleReport, victim );
+    }
 }
 public void Event_PlayerHurt ( Event event, const char[] name, bool dontBroadcast ) {
     int healthDmg = GetEventInt(event,"dmg_health");
@@ -85,8 +97,6 @@ public void Event_PlayerHurt ( Event event, const char[] name, bool dontBroadcas
     hitboxTaken[victim][attacker][hitgroup]++;
     hitboxTakenDamage[victim][attacker][hitgroup] += healthDmg;
 
-    /* if attacker is dead show updated report at the end of the round ? */
-
 }
 public void Event_PlayerSpawn ( Event event, const char[] name, bool dontBroadcast ) {
     int userid = GetEventInt ( event,"userid" );
@@ -95,11 +105,7 @@ public void Event_PlayerSpawn ( Event event, const char[] name, bool dontBroadca
 }
  
 /* END EVENTS */
-
-public void printDeathReport ( int player ) {
-    
-}
-
+ 
 public Action printSingleReport ( Handle timer, int player ) {
     if ( playerIsReal ( player ) ) {
         printReport ( player );
@@ -137,6 +143,7 @@ public void printReport ( int player ) {
             }
         }
     }
+    clearDamageDataFor ( player );
 }
 
 /* compile damage report for a single enemy */
@@ -264,9 +271,33 @@ public void clearAllDamageData ( ) {
     }
 }
 
+public void clearDamageDataFor ( int player ) {
+    PrintToConsoleAll ( "Clearing damage data for %N", player );
+    for ( int enemy = 1; enemy <= MaxClients; enemy++ ) {
+        damageGiven[player][enemy] = 0;
+        damageTaken[player][enemy] = 0;
+        hitsGiven[player][enemy] = 0;
+        hitsTaken[player][enemy] = 0;
+        killedPlayer[player][enemy] = 0;
+        for ( int k = 0; k <= MAXHITGROUPS; k++ ) {
+            hitboxGiven[player][enemy][k] = 0;
+            hitboxTaken[player][enemy][k] = 0;
+            hitboxGivenDamage[player][enemy][k] = 0;
+            hitboxTakenDamage[player][enemy][k] = 0;
+        }
+    }
+}
+
 /* return true if player is real */
 public bool playerIsReal ( int player ) {
     return ( IsClientInGame ( player ) &&
              ! IsClientSourceTV ( player ) );
 }
 
+/* is warmup */
+public bool isWarmup ( ) {
+    if ( GameRules_GetProp ( "m_bWarmupPeriod" ) == 1 ) {
+        return true;
+    } 
+    return false;
+}
