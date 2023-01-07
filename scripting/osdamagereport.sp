@@ -251,7 +251,6 @@ public bool attackersExists ( int player ) {
 }
 
 public void clearAllDamageData ( ) {
-    PrintToConsoleAll ( "Clearing all damage data:" );
     for ( int i = 0; i <= MaxClients; i++ ) {
         showReportAgain[i] = 0;
         for ( int j = 0; j <= MaxClients; j++ ) {
