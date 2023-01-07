@@ -166,7 +166,11 @@ public void fetchVictimDamageInfo ( int attacker, int victim ) {
 public void fetchAttackerDamageInfo ( int attacker, int victim ) {
     char attackerName[64];
     GetClientName ( attacker, attackerName, sizeof(attackerName) );
-    Format ( damageInfo, sizeof(damageInfo), " - %s", attackerName );
+    if ( attacker == 0 ) {
+        Format ( attackerName, sizeof(attackerName), " - World" );
+    } else {
+        Format ( damageInfo, sizeof(damageInfo), " - %s", attackerName );
+    }
     if ( attackerKilledVictim ( attacker, victim ) ) {
         Format ( damageInfo, sizeof(damageInfo), "%s (killed by)", damageInfo );
     }
