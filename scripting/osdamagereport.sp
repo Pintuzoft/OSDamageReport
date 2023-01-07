@@ -134,7 +134,7 @@ public void printReport ( int player ) {
         /* LOOP ALL VICTIMS */
         for ( int victim = 1; victim <= MaxClients; victim++ ) {
             if ( isVictim ( player, victim ) ) {
-                fetchDamageInfo ( player, victim );
+                fetchVictimDamageInfo ( player, victim );
                 PrintToChat ( player, damageInfo );
             }
         }        
@@ -144,7 +144,7 @@ public void printReport ( int player ) {
         /* LOOP ALL ATTACKERS */
         for ( int attacker = 1; attacker <= MaxClients; attacker++ ) {
             if ( isVictim ( attacker, player ) ) {
-                fetchDamageInfo ( attacker, player );
+                fetchVictimDamageInfo ( attacker, player );
                 PrintToChat ( player, " \x05%s", damageInfo );
             }
         }
@@ -152,28 +152,28 @@ public void printReport ( int player ) {
 }
 
 /* compile damage report for a single enemy */
-public void fetchDamageInfo ( int player, int victim ) {
+public void fetchVictimDamageInfo ( int attacker, int victim ) {
     char victimName[64];
     GetClientName ( victim, victimName, sizeof(victimName) );
     Format ( damageInfo, sizeof(damageInfo), " - %s", victimName );
-    if ( playerKilledVictim ( player, victim ) ) {
+    if ( attackerKilledVictim ( attacker, victim ) ) {
         Format ( damageInfo, sizeof(damageInfo), "%s (killed)", damageInfo );
     }
-    Format ( damageInfo, sizeof(damageInfo), "%s: %d dmg, %d hits - (", damageInfo, damageGiven[player][victim], hitsGiven[player][victim] );
+    Format ( damageInfo, sizeof(damageInfo), "%s: %d dmg, %d hits - (", damageInfo, damageGiven[attacker][victim], hitsGiven[attacker][victim] );
     bool first = true;
     for ( int hitboxgroup = 0; hitboxgroup <= MAXHITGROUPS; hitboxgroup++ ) {
-        if ( hitboxGiven[hitboxgroup][player][victim] > 0 ) {
+        if ( hitboxGiven[attacker][victim][hitboxgroup] > 0 ) {
             if ( first ) {
-                Format ( damageInfo, sizeof(damageInfo), "%s%s[%d:%ddmg]", damageInfo, hitboxName[hitboxgroup], hitboxGiven[hitboxgroup][player][victim], hitboxGivenDamage[hitboxgroup][player][victim] );
+                Format ( damageInfo, sizeof(damageInfo), "%s%s[%d:%ddmg]", damageInfo, hitboxName[hitboxgroup], hitboxGiven[attacker][victim][hitboxgroup], hitboxGivenDamage[attacker][victim][hitboxgroup] );
                 first = false;
             } else {
-                Format ( damageInfo, sizeof(damageInfo), "%s, %s[%d:%ddmg]", damageInfo, hitboxName[hitboxgroup], hitboxGiven[hitboxgroup][player][victim], hitboxGivenDamage[hitboxgroup][player][victim] );
+                Format ( damageInfo, sizeof(damageInfo), "%s, %s[%d:%ddmg]", damageInfo, hitboxName[hitboxgroup], hitboxGiven[attacker][victim][hitboxgroup], hitboxGivenDamage[attacker][victim][hitboxgroup] );
             }
         }
     }
     Format ( damageInfo, sizeof(damageInfo), "%s)", damageInfo );
 }
-
+ 
 public bool isVictim ( int player, int victim ) {
     if ( damageGiven[player][victim] > 0 ) {
         return true;
@@ -210,8 +210,8 @@ public int totalHitsTaken ( int player ) {
     return damage;
 }
 
-public bool playerKilledVictim ( int player, int victim ) {
-    return ( killedPlayer[player][victim] == 1 );
+public bool attackerKilledVictim ( int attacker, int victim ) {
+    return ( killedPlayer[attacker][victim] == 1 );
 }
 
 
