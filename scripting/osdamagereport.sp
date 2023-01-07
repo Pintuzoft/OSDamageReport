@@ -65,7 +65,7 @@ public void Event_PlayerDeath ( Event event, const char[] name, bool dontBroadca
     killedPlayer[attacker][victim] = 1;
 
     /* show report */
-    CreateTimer ( 3.0, printSingleReport, victim );
+    CreateTimer ( 2.1, printSingleReport, victim );
 }
 public void Event_PlayerHurt ( Event event, const char[] name, bool dontBroadcast ) {
     int healthDmg = GetEventInt(event,"dmg_health");
