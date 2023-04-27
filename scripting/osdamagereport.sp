@@ -142,9 +142,7 @@ public void printReport ( int player ) {
 
 /* compile damage report for a single enemy */
 public void fetchVictimDamageInfo ( int attacker, int victim ) {
-    char victimName[64];
-    GetClientName ( victim, victimName, sizeof(victimName) );
-    Format ( damageInfo, sizeof(damageInfo), " - %s", victimName );
+    Format ( damageInfo, sizeof(damageInfo), " - %s", playerName[victim] );
     if ( attackerKilledVictim ( attacker, victim ) ) {
         Format ( damageInfo, sizeof(damageInfo), "%s (Killed)", damageInfo );
     }
@@ -163,12 +161,10 @@ public void fetchVictimDamageInfo ( int attacker, int victim ) {
 }
 /* compile damage report for a single enemy */
 public void fetchAttackerDamageInfo ( int attacker, int victim ) {
-    char attackerName[64];
-    GetClientName ( attacker, attackerName, sizeof(attackerName) );
     if ( attacker == 0 ) {
         Format ( damageInfo, sizeof(damageInfo), " - World" );
     } else {
-        Format ( damageInfo, sizeof(damageInfo), " - %s", attackerName );
+        Format ( damageInfo, sizeof(damageInfo), " - %s", playerName[attacker] );
     }
     if ( attackerKilledVictim ( attacker, victim ) ) {
         Format ( damageInfo, sizeof(damageInfo), "%s (killed by)", damageInfo );
